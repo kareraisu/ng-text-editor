@@ -1,0 +1,11 @@
+:host {
+  display: flex;
+  align-items: center;
+  width: 800px;
+  margin-top: 20px;
+  background-color: #fff;
+}
+
+.option + .option {
+  margin-left: 5px;
+}
