@@ -1,14 +1,14 @@
 <div class="text">
   <ng-container *ngFor="let word of service.text; let i = index">
-    <span *ngIf="!word.newline"
-    [class]="word.format.flags?.join(' ') + (word === service.current ? ' selected' : '')"
-    [class.space]="word.space"
-    [class.tab]="word.tab"
-    [style.color]="word.format.color"
-    (click)="service.selectWord(word)">
+    <span *ngIf="!word.Enter"
+    [class]="word.format?.flags?.join(' ') + (i === service.word_index ? ' selected' : '')"
+    [class.space]="word.Space"
+    [class.tab]="word.Tab"
+    [style.color]="word.format?.color"
+    (click)="service.selectWord(i)">
       {{ word.text }}
     </span>
-    <br *ngIf="word.newline">
+    <br *ngIf="word.Enter">
   </ng-container>
 </div>
 

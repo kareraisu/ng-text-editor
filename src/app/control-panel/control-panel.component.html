@@ -1,4 +1,4 @@
 <div *ngFor="let option of service.format_options" class="option"
 [innerHTML]="option.renderUI() | safe: 'html'"
 [class.active]="option.active"
-(click)="service.current && option.applyTo(service.current)"></div>
+(click)="service.word && option.applyTo(service.word)"></div>

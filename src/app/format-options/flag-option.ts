@@ -16,7 +16,7 @@ export abstract class FlagOption implements FormatOption {
     }
 
     applyTo(word) {
-        if (!word) { return; }
+        if (!word || !word.text || !word.text.length) { return; }
         if (!word.format.flags) { word.format.flags = []; }
         if (this.active) {
             word.format.flags.splice(word.format.flags.indexOf(this.flag), 1);

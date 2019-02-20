@@ -10,9 +10,14 @@
 .text {
   max-width: 600px;
   height: 100%;
-  background-color: #fff;
-  border: 1px solid #e4dede;
   padding: 20px;
+  border: 1px solid #e4dede;
+  background-color: #fff;
+
+  span {
+    display: inline-block;
+    margin-left: 10px;
+  }
 
   .selected {
     background-color: #000;
@@ -29,6 +34,10 @@
 
   .u {
     text-decoration: underline;
+  }
+
+  .tab {
+    width: 20px;
   }
 
 }
