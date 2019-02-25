@@ -27,6 +27,7 @@ export class TextService {
     private synonyms: SynonymsService,
   ) {
     document.body.addEventListener('keydown', this.onKeydown.bind(this));
+    this.loadFormatStyles();
   }
 
   onKeydown(event) {
@@ -162,6 +163,12 @@ export class TextService {
   async loadText() {
     const text = await this.getMockText();
     this.text = this.transformPlainTextToRichText(text);
+  }
+
+  loadFormatStyles() {
+    const styles = document.createElement('style');
+    styles.innerHTML = this.format_options.map(option => option.formatStyle()).join(' ');
+    document.head.appendChild(styles);
   }
 
 }

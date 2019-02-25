@@ -11,6 +11,10 @@ export abstract class FlagOption implements FormatOption {
         return `<button>flag</button>`;
     }
 
+    formatStyle() {
+        return ``;
+    }
+
     updateStateFor(word) {
         this.active = word.format.flags && word.format.flags.includes(this.flag);
     }

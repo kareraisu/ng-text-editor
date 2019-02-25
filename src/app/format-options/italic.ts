@@ -9,6 +9,10 @@ class Italic extends FlagOption {
     renderUI() {
         return `<button><i>I</i></button>`;
     }
+
+    formatStyle() {
+        return `.i { font-style: italic; }`;
+    }
 }
 
 export const italic = new Italic();

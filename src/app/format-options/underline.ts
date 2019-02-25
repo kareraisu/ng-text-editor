@@ -9,6 +9,10 @@ class Underline extends FlagOption {
     renderUI() {
         return `<button><u>U</u></button>`;
     }
+
+    formatStyle() {
+        return `.u { text-decoration: underline; }`;
+    }
 }
 
 export const underline = new Underline();
