@@ -20,7 +20,7 @@ export class TextService {
   text: Word[];
   word: Word;
   word_index: number;
-  cursor: number;
+  _cursor: number;
   format_options = [ bold, italic, underline ];
 
   constructor(
@@ -28,6 +28,14 @@ export class TextService {
   ) {
     document.body.addEventListener('keydown', this.onKeydown.bind(this));
     this.loadFormatStyles();
+  }
+
+  get cursor() {
+    return this._cursor;
+  }
+  set cursor(value) {
+    this._cursor = value;
+    document.documentElement.style.setProperty('--cursor', value / 2 + 'em');
   }
 
   onKeydown(event) {
