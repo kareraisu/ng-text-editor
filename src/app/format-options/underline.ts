@@ -5,6 +5,7 @@ class Underline extends FlagOption {
 
     name = 'underline';
     flag = 'u';
+    key = 'u';
 
     renderUI() {
         return `<button><u>U</u></button>`;

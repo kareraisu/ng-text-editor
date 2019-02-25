@@ -5,6 +5,7 @@ class Bold extends FlagOption {
 
     name = 'bold';
     flag = 'b';
+    key = 'b';
 
     renderUI() {
         return `<button><b>B</b></button>`;

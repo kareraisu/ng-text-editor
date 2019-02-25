@@ -39,7 +39,6 @@ export class TextService {
   }
 
   onKeydown(event) {
-    if ( event.keyCode > 46 ) { this.input(event.key); }
     if ( CONTROL_KEYS.includes(event.key) ) { return; }
     if ( WHITE_SPACES.includes(event.code) ) { this.addWhiteSpace(event.code); }
     // tslint:disable-next-line:curly
@@ -59,6 +58,16 @@ export class TextService {
       default:
         break;
     }
+    if (event.ctrlKey) {
+      this.format_options.forEach(option => {
+        if (event.key === option.key) {
+          option.applyTo(this.word);
+          // prevent potential browser action
+          event.preventDefault();
+        }
+      });
+    }
+    else if ( event.keyCode > 46 ) { this.input(event.key); }
   }
 
   addWhiteSpace(key: string) {

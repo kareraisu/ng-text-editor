@@ -5,6 +5,7 @@ class Italic extends FlagOption {
 
     name = 'italic';
     flag = 'i';
+    key = 'i';
 
     renderUI() {
         return `<button><i>I</i></button>`;
