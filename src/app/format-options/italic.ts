@@ -1,19 +1,15 @@
+import { Component } from '@angular/core';
 import { FlagOption } from './flag-option';
 
+@Component({
+    selector: 'app-format-italic',
+    template: `<button [class.active]="active"
+    (click)="applyTo(service.word)"><i>I</i></button>`,
+})
+export class Italic extends FlagOption {
 
-class Italic extends FlagOption {
-
-    name = 'italic';
     flag = 'i';
-    key = 'i';
+    keys = ['i'];
+    styles = `.i { font-style: italic; }`;
 
-    renderUI() {
-        return `<button><i>I</i></button>`;
-    }
-
-    formatStyle() {
-        return `.i { font-style: italic; }`;
-    }
 }
-
-export const italic = new Italic();

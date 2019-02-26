@@ -1,19 +1,15 @@
+import { Component } from '@angular/core';
 import { FlagOption } from './flag-option';
 
+@Component({
+    selector: 'app-format-underline',
+    template: `<button [class.active]="active"
+    (click)="applyTo(service.word)"><u>U</u></button>`,
+})
+export class Underline extends FlagOption {
 
-class Underline extends FlagOption {
-
-    name = 'underline';
     flag = 'u';
-    key = 'u';
+    keys = ['u'];
+    styles = `.u { text-decoration: underline; }`;
 
-    renderUI() {
-        return `<button><u>U</u></button>`;
-    }
-
-    formatStyle() {
-        return `.u { text-decoration: underline; }`;
-    }
 }
-
-export const underline = new Underline();

@@ -3,23 +3,12 @@ import { FormatOption } from './format-option';
 
 export abstract class FlagOption implements FormatOption {
 
-    name = '';
+    keys = [];
+    styles = '';
     flag = '';
     active = false;
 
-    renderUI() {
-        return `<button>flag</button>`;
-    }
-
-    formatStyle() {
-        return ``;
-    }
-
-    updateStateFor(word) {
-        this.active = word.format.flags && word.format.flags.includes(this.flag);
-    }
-
-    applyTo(word) {
+    applyTo(word, value?) {
         if (!word || !word.text || !word.text.length) { return; }
         if (!word.format.flags) { word.format.flags = []; }
         if (this.active) {
@@ -29,6 +18,14 @@ export abstract class FlagOption implements FormatOption {
             word.format.flags.push(this.flag);
             this.active = true;
         }
+    }
+
+    updateStateFor(word) {
+        this.active = word.format.flags && word.format.flags.includes(this.flag);
+    }
+
+    genClassesFor(word) {
+        return word.format.flags && word.format.flags.includes(this.flag) ? this.flag : '';
     }
 
 }

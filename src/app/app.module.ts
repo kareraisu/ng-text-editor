@@ -8,11 +8,12 @@ import { ControlPanelComponent } from './control-panel/control-panel.component';
 import { SidePanelComponent } from './side-panel/side-panel.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
+import { Bold, Italic, Underline, Size } from './format-options';
 
 import { TextService } from './text-service/text.service';
 import { SynonymsService } from './side-panel/synonyms.service';
 
-import { SafePipe } from './helpers';
+import { ViewRef } from './control-panel/view-ref.directive';
 
 
 @NgModule({
@@ -23,7 +24,11 @@ import { SafePipe } from './helpers';
     SidePanelComponent,
     HeaderComponent,
     FooterComponent,
-    SafePipe,
+    ViewRef,
+    Bold, Italic, Underline, Size,
+  ],
+  entryComponents: [
+    Bold, Italic, Underline, Size,
   ],
   imports: [
     BrowserModule,

@@ -1,19 +1,15 @@
+import { Component } from '@angular/core';
 import { FlagOption } from './flag-option';
 
+@Component({
+    selector: 'app-format-bold',
+    template: `<button [class.active]="active"
+    (click)="applyTo(service.word)"><b>B</b></button>`,
+})
+export class Bold extends FlagOption {
 
-class Bold extends FlagOption {
-
-    name = 'bold';
     flag = 'b';
-    key = 'b';
+    keys = ['b'];
+    styles = `.b { font-weight: bold; }`;
 
-    renderUI() {
-        return `<button><b>B</b></button>`;
-    }
-
-    formatStyle() {
-        return `.b { font-weight: bold; }`;
-    }
 }
-
-export const bold = new Bold();

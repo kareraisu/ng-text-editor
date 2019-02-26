@@ -1,14 +1,16 @@
 <div class="text">
   <ng-container *ngFor="let word of service.text; let i = index">
-    <span *ngIf="!word.Enter"
-    [class]="word.format?.flags?.join(' ') + (i === service.word_index ? ' selected' : '')"
-    [class.space]="word.Space"
-    [class.tab]="word.Tab"
-    [style.color]="word.format?.color"
+
+    <span *ngIf="word.text"
+    [class]="service.genClassesFor(word) + (i === service.word_index ? ' selected' : '')"
     (click)="service.selectWord(i)">
       {{ word.text }}
     </span>
+
+    <span *ngIf="word.Space" class="space"></span>
+    <span *ngIf="word.Tab" class="tab"></span>
     <br *ngIf="word.Enter">
+
   </ng-container>
 </div>
 

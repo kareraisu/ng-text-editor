@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { SynonymsService } from '../side-panel/synonyms.service';
-import { bold, italic, underline } from 'src/app/format-options';
+import { Bold, Italic, Underline, Size } from 'src/app/format-options';
 
 export interface Word {
   text?: string;
@@ -21,13 +21,14 @@ export class TextService {
   word: Word;
   word_index: number;
   _cursor: number;
-  format_options = [ bold, italic, underline ];
+
+  format_options_classes = [ Bold, Italic, Underline, Size ];
+  format_options = [];
 
   constructor(
     private synonyms: SynonymsService,
   ) {
     document.body.addEventListener('keydown', this.onKeydown.bind(this));
-    this.loadFormatStyles();
   }
 
   get cursor() {
@@ -50,18 +51,18 @@ export class TextService {
         this.delete();
         break;
       case 'ArrowRight':
-        event.ctrlKey ? this.nextWord() : this.nextChar();
+        this.nextChar(event.ctrlKey);
         break;
       case 'ArrowLeft':
-        event.ctrlKey ? this.prevWord() : this.prevChar();
+        this.prevChar(event.ctrlKey);
         break;
       default:
         break;
     }
     if (event.ctrlKey) {
       this.format_options.forEach(option => {
-        if (event.key === option.key) {
-          option.applyTo(this.word);
+        if (option.keys.includes(event.key)) {
+          option.applyTo(this.word, event.key);
           // prevent potential browser action
           event.preventDefault();
         }
@@ -71,27 +72,35 @@ export class TextService {
   }
 
   addWhiteSpace(key: string) {
-    const split = this.cursor < this.word.text.length;
+    const split = 0 < this.cursor && this.cursor < this.word.text.length;
+    let new_word: Word = {text: '', format: {}};
     if (split) {
-      this.splitWord();
+      new_word = {...this.word};
+      this.word.text = this.word.text.slice(0, this.cursor);
+      new_word.text = new_word.text.slice(this.cursor);
     }
     if (key !== 'Space') {
       // add whitespace element
-      this.text.splice(this.word_index + 1, 0, {[key]: true});
-      this.nextWord();
+      if (this.cursor > 0) { ++this.word_index; }
+      this.text.splice(this.word_index, 0, {[key]: true});
     }
-    if ( !split ) {
+    if (split || this.word_index >= this.text.length - 1) {
       // add new word
-      this.text.splice(this.word_index + 1, 0, {text: '', format: {}});
-      this.nextWord();
+      this.text.splice(this.word_index + 1, 0, new_word);
     }
+    if (this.cursor > 0) { this.nextWord(); }
   }
 
   backspace() {
-    if (this.cursor === 0) {
+    if (this.cursor === 0 && this.word_index > 0) {
       this.prevWord();
-      this.cursor = this.word.text.length;
-      this.joinWords();
+      if (this.word.text) {
+        this.cursor = this.word.text.length;
+        this.joinWords();
+      } else {
+        // delete space element
+        this.text.splice(this.word_index, 1);
+      }
     } else {
       this.word.text = this.word.text
         .slice(0, this.cursor - 1)
@@ -101,7 +110,7 @@ export class TextService {
   }
 
   delete() {
-    if (this.cursor === this.word.text.length) {
+    if (this.isLastChar && !this.isLastWord) {
       this.joinWords();
     } else {
       this.word.text = this.word.text
@@ -110,29 +119,39 @@ export class TextService {
     }
   }
 
-  nextChar() {
-    if (this.cursor === this.word.text.length) {
+  nextChar(jump) {
+    if (!this.word.text || this.isLastChar ) {
       this.nextWord();
     } else {
-      ++this.cursor;
+      this.cursor = jump ? this.word.text.length : this.cursor + 1;
     }
   }
 
-  prevChar() {
+  prevChar(jump) {
     if (this.cursor === 0) {
       this.prevWord();
-      this.cursor = this.word.text.length;
     } else {
-      --this.cursor;
+      this.cursor = jump ? 0 : this.cursor - 1;
     }
   }
 
   nextWord() {
-    this.selectWord(++this.word_index);
+    if (!this.isLastWord) { this.selectWord(++this.word_index); }
   }
 
   prevWord() {
-    this.selectWord(--this.word_index);
+    if (this.word_index > 0) {
+      this.selectWord(--this.word_index);
+      if (this.word.text) { this.cursor = this.word.text.length; }
+    }
+  }
+
+  get isLastChar() {
+    return this.cursor === this.word.text.length;
+  }
+
+  get isLastWord() {
+    return this.word_index === this.text.length - 1;
   }
 
   input(key: string) {
@@ -146,21 +165,19 @@ export class TextService {
     if (reset_cursor) { this.cursor = 0; }
     this.word_index = index;
     this.word = this.text[index];
-    this.format_options.forEach(option => option.updateStateFor(this.word));
+    if (this.word.text) {
+      this.format_options.forEach(option => option.updateStateFor(this.word));
+    }
     // this.synonyms.getSynonymsFor(this.word.text);
-  }
-
-  splitWord() {
-    const new_word = {...this.word};
-    this.word.text = this.word.text.slice(0, this.cursor);
-    new_word.text = new_word.text.slice(this.cursor);
-    this.text.splice(this.word_index + 1, 0, new_word);
-    this.nextWord();
   }
 
   joinWords() {
     const [deleted] = this.text.splice(this.word_index + 1, 1);
     this.word.text += deleted.text;
+  }
+
+  genClassesFor(word: Word): string {
+    return this.format_options.map(option => option.genClassesFor(word)).join(' ');
   }
 
   transformPlainTextToRichText(plain_text: string): Word[] {
@@ -184,7 +201,7 @@ export class TextService {
 
   loadFormatStyles() {
     const styles = document.createElement('style');
-    styles.innerHTML = this.format_options.map(option => option.formatStyle()).join(' ');
+    styles.innerHTML = this.format_options.map(option => option.styles).join(' ');
     document.head.appendChild(styles);
   }
 
